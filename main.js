@@ -5,6 +5,8 @@ const randomNumbers = (lowestNum, highestNum) => {
 }
 
 function handleBtnQuantClick(e) {
+    totalHTML = document.getElementById(e.target.id.slice(0, 3) + 'SideTotal')
+    totalHTML.innerText = 'Total: '
     field = document.getElementById(e.target.id.slice(0,3) + 'SideDieQuantity')
     direction = e.target.id.slice(3,4)
     if (parseInt(field.value) > 0 && direction == 'm') {
@@ -14,11 +16,36 @@ function handleBtnQuantClick(e) {
     }
 }
 
+function handleRollSubmit(e) {
+    e.preventDefault()
+    totalHTML = document.getElementById(e.target.id.slice(0, 3) + 'SideTotal')
+    totalHTML.innerText = 'Total: '
+
+    form = e.target
+    dieType = parseInt(form.id)
+    field = document.getElementById(e.target.id.slice(0, 3) + 'SideDieQuantity')
+    dieNumber = parseInt(field.value)
+    total = 0
+    for(let i=0; i<dieNumber; i++) {
+        total += randomNumbers(1,dieType)
+    }
+    totalHTML.innerText += total
+}
+
 const singleDieHTML = (sides) => {
-    const die = document.createElement('div')
-    die.className = "input-group input-group-lg col-md-auto"
-    const buttons = document.createElement('div')
-    buttons.className = 'input-group-prepend'
+    const die = document.createElement('form')
+    die.className = "input-group input-group-md col-md-auto"
+    die.type = 'form'
+    die.id = `${sides}form`
+
+    const buttonGroup = document.createElement('div')
+    buttonGroup.className = 'btn-group btn-group-sm'
+    submitButton = document.createElement('button')
+    submitButton.type = 'submit'
+    submitButton.className = 'btn btn-primary'
+    submitButton.innerText = 'ROLL'
+    submitButton.id = `${sides}submit`
+    buttonGroup.appendChild(submitButton)
     const minusAndPlus = ['-','+']
     minusAndPlus.forEach((type) => {
         button = document.createElement('button')
@@ -30,26 +57,30 @@ const singleDieHTML = (sides) => {
             button.id = `${sides}plusOne`
         }
         button.innerText = type
-        buttons.appendChild(button)
+        buttonGroup.appendChild(button)
     })
-    die.appendChild(buttons)
+
+    die.appendChild(buttonGroup)
     die.innerHTML += `
-        <input type="number" id='${sides}SideDieQuantity' name="quantity" class="form-control " value='0' disabled>
+        <input type="number" id='${sides}SideDieQuantity' name="quantity" class="form-control " value='1' disabled>
         <div class="input-group-append">
             <span class="input-group-text">d${parseInt(sides)} </span>
         </div>
     `
-    submitButton = document.createElement('button')
-    submitButton.type = 'submit'
-    submitButton.className = 'btn btn-primary'
-    submitButton.innerText = 'ROLL'
-    die.appendChild(submitButton)
+    secondLine = document.createElement('div')
+    const total = document.createElement('h3')
+    total.id = `${sides}SideTotal`
+    total.innerText = 'Total: '
+    secondLine.appendChild(total)
+
+    die.appendChild(secondLine)
 
     return die
 }
 
 
 const render = () => {
+    console.log('rendered')
     cardTable = document.createElement('div')
     
     DICE.forEach((die)=> {
@@ -63,10 +94,14 @@ const render = () => {
         document.body.appendChild(card)
     })
 
-    buttons = document.querySelectorAll('.btn')
+    buttons = document.querySelectorAll('.btn-outline-secondary')
     buttons.forEach((button)=>{
         button.addEventListener("click", (e)=>{handleBtnQuantClick(e)})
     }) 
+    forms = document.querySelectorAll('form')
+    forms.forEach((form)=>{
+        form.addEventListener("submit", (e)=>{handleRollSubmit(e)})
+    })
 }
 
 render()
