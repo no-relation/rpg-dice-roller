@@ -1,5 +1,5 @@
-const DICE = ['004','006','008','010','012','020','100']
-let specialDiceArray = ['000']
+const DICE = ['000','004','006','008','010','012','020','100']
+let specialDiceArray = []
 let specialDiceDiv = document.createElement('div')
 
 const randomNumbers = (lowestNum, highestNum) => {
@@ -96,14 +96,16 @@ const render = () => {
     console.log('rendered')
     
     DICE.forEach((die)=> {
-        const card = document.createElement('div')
-        card.className = 'card'
-        card.style = 'width: 18rem'
-        const cardBody = document.createElement('div')
-        cardBody.className = 'card-body'
-        cardBody.appendChild(singleDieHTML(die))
-        card.appendChild(cardBody)
-        document.body.appendChild(card)
+        if (die !== '000') {
+            const card = document.createElement('div')
+            card.className = 'card'
+            card.style = 'width: 18rem'
+            const cardBody = document.createElement('div')
+            cardBody.className = 'card-body'
+            cardBody.appendChild(singleDieHTML(die))
+            card.appendChild(cardBody)
+            document.body.appendChild(card)
+        }
     })
 
     document.body.appendChild(specialDiceDiv)
@@ -155,7 +157,7 @@ const render = () => {
 const renderSpecialDice = () => {
     specialDiceDiv.innerHTML = ''
     specialDiceArray.forEach((die) => {
-        if (die !== '000') {
+        if (!DICE.includes(die)) {
             card = document.createElement('div')
             card.className = 'card special-die'
             card.style = 'width: 18rem'
