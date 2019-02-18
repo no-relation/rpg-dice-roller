@@ -1,4 +1,5 @@
 const DICE = ['004','006','008','010','012','020','100']
+let specialDice = ['000']
 
 const randomNumbers = (lowestNum, highestNum) => {
     return (Math.floor(Math.random() * highestNum) + lowestNum)
@@ -32,9 +33,20 @@ function handleRollSubmit(e) {
     totalHTML.innerText += total
 }
 
+function addSpecialDice(e) {
+    e.preventDefault()
+    const specialForm = e.target
+    const sides = specialForm.querySelector('#die-num-sides')
+    if (!specialDice.includes(sides.value.padStart(3, '0'))) {
+        specialDice.push(sides.value.padStart(3,'0'))
+    }
+    console.log(sides, specialDice)
+    sides.value = null
+}
+
 const singleDieHTML = (sides) => {
     const die = document.createElement('form')
-    die.className = "input-group input-group-md col-md-auto"
+    die.className = "input-group input-group-md col-md-auto die-form"
     die.type = 'form'
     die.id = `${sides}form`
 
@@ -93,6 +105,8 @@ const render = () => {
         document.body.appendChild(card)
     })
 
+    renderSpecialDice()
+
     specialCard = document.createElement('div')
     specialCard.className = 'card'
     specialCard.style = 'width: 18rem'
@@ -102,20 +116,22 @@ const render = () => {
     specialTitle.innerText = "Create new die with how many sides?"
     specialCard.appendChild(specialTitle)
 
-    dieForm = document.createElement('div')
+    dieForm = document.createElement('form')
     dieForm.className = 'input-group'
 
     dieInput = document.createElement('input')
     dieInput.className = 'form-control'
     dieInput.type = 'number'
+    dieInput.id = 'die-num-sides'
     dieForm.appendChild(dieInput)
     
     spButtonGroup = document.createElement('div')
     spButtonGroup.className = 'input-group-append'
     specialDieButton = document.createElement('button')
-    specialDieButton.type = 'button'
+    specialDieButton.type = 'submit'
     specialDieButton.className = 'btn btn-warning'
     specialDieButton.innerText = 'Create Die'
+    specialDieButton.id = 'create-die'
     spButtonGroup.appendChild(specialDieButton)
     dieForm.appendChild(spButtonGroup)
 
@@ -127,9 +143,28 @@ const render = () => {
     buttons.forEach((button)=>{
         button.addEventListener("click", (e)=>{handleBtnQuantClick(e)})
     }) 
-    forms = document.querySelectorAll('form')
+    forms = document.querySelectorAll('.die-form')
     forms.forEach((form)=>{
         form.addEventListener("submit", (e)=>{handleRollSubmit(e)})
+    })
+    dieForm.addEventListener("submit", (e)=>{addSpecialDice(e)})
+}
+
+const renderSpecialDice = () => {
+    console.log('rendering special dice')
+    specialDice.forEach((die) => {
+        if (die !== '000') {
+            card = document.createElement('div')
+            card.className = 'card'
+            card.style = 'width: 18rem'
+            card.type = 'special-die'
+            card.id = `${die}SiderCard`
+            cardBody = document.createElement('div')
+            cardBody.className = 'card-body'
+            cardBody.appendChild(singleDieHTML(die))
+            card.appendChild(cardBody)
+            specialCard.before(card)
+        }
     })
 }
 
