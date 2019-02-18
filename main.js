@@ -119,6 +119,8 @@ const render = () => {
 
     document.body.appendChild(specialDiceDiv)
 
+    addAllListeners()
+
     const specialCardForm = document.createElement('div')
     specialCardForm.id = 'special-card-form'
     specialCardForm.className = 'card'
@@ -152,19 +154,32 @@ const render = () => {
 
     document.body.appendChild(specialCardForm)
 
-    const buttons = document.querySelectorAll('.btn-outline-secondary')
-    buttons.forEach((button)=>{
-        button.addEventListener("click", (e)=>{handleBtnQuantClick(e)})
-    }) 
-    forms = document.querySelectorAll('.die-form')
-    forms.forEach((form)=>{
-        form.addEventListener("submit", (e)=>{handleRollSubmit(e)})
-    })
     dieForm.addEventListener("submit", (e)=>{addSpecialDice(e)})
 }
 
+const addAllListeners = () => {
+    const buttons = document.querySelectorAll('.btn-outline-secondary')
+    buttons.forEach((button) => {
+        if (!button.className.includes('listened')) {
+            button.className += ' listened'
+            button.addEventListener("click", (e) => { handleBtnQuantClick(e) })
+        }
+    })
+    const forms = document.querySelectorAll('.die-form')
+    forms.forEach((form) => {
+        console.log(form.className)
+        if (!form.className.includes('listened')) {
+            form.className += ' listened'
+            form.addEventListener("submit", (e) => { handleRollSubmit(e) })
+        }
+    })
+    const deleteButtons = document.querySelectorAll('.delete-die')
+    deleteButtons.forEach((deleter) => {
+        deleter.addEventListener('click', (e) => { removeSpecialDice(e) })
+    })
+}
+
 const renderSpecialDice = () => {
-    console.log(specialDiceArray)
     specialDiceDiv.innerHTML = ''
     specialDiceArray.forEach((die) => {
         if (!DICE.includes(die)) {
@@ -187,10 +202,8 @@ const renderSpecialDice = () => {
             specialDiceDiv.appendChild(card)
         }
     })
-    const deleteButtons = document.querySelectorAll('.delete-die')
-    deleteButtons.forEach((deleter) => {
-        deleter.addEventListener('click', (e)=>{removeSpecialDice(e)})
-    })
+
+    addAllListeners()
 }
 
 render()
