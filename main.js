@@ -81,7 +81,6 @@ const singleDieHTML = (sides) => {
 
 const render = () => {
     console.log('rendered')
-    cardTable = document.createElement('div')
     
     DICE.forEach((die)=> {
         card = document.createElement('div')
@@ -93,6 +92,36 @@ const render = () => {
         card.appendChild(cardBody)
         document.body.appendChild(card)
     })
+
+    specialCard = document.createElement('div')
+    specialCard.className = 'card'
+    specialCard.style = 'width: 18rem'
+    
+    specialTitle = document.createElement('h5')
+    specialTitle.className = 'card-title'
+    specialTitle.innerText = "Create new die with how many sides?"
+    specialCard.appendChild(specialTitle)
+
+    dieForm = document.createElement('div')
+    dieForm.className = 'input-group'
+
+    dieInput = document.createElement('input')
+    dieInput.className = 'form-control'
+    dieInput.type = 'number'
+    dieForm.appendChild(dieInput)
+    
+    spButtonGroup = document.createElement('div')
+    spButtonGroup.className = 'input-group-append'
+    specialDieButton = document.createElement('button')
+    specialDieButton.type = 'button'
+    specialDieButton.className = 'btn btn-warning'
+    specialDieButton.innerText = 'Create Die'
+    spButtonGroup.appendChild(specialDieButton)
+    dieForm.appendChild(spButtonGroup)
+
+    specialCard.appendChild(dieForm)
+
+    document.body.appendChild(specialCard)
 
     buttons = document.querySelectorAll('.btn-outline-secondary')
     buttons.forEach((button)=>{
