@@ -45,6 +45,15 @@ function addSpecialDice(e) {
     renderSpecialDice()
 }
 
+function removeSpecialDice(e) {
+    const deletedDie = e.target.id.slice(0, 3)
+    const deleteIdx = specialDiceArray.findIndex((die)=>{
+        return die === deletedDie
+    })
+    specialDiceArray.splice(deleteIdx,1)
+    renderSpecialDice()
+}
+
 const singleDieHTML = (sides) => {
     const die = document.createElement('form')
     die.className = "input-group input-group-md col-md-auto die-form"
@@ -155,6 +164,7 @@ const render = () => {
 }
 
 const renderSpecialDice = () => {
+    console.log(specialDiceArray)
     specialDiceDiv.innerHTML = ''
     specialDiceArray.forEach((die) => {
         if (!DICE.includes(die)) {
@@ -162,14 +172,25 @@ const renderSpecialDice = () => {
             card.className = 'card special-die'
             card.style = 'width: 18rem'
             card.id = `${die}SiderCard`
+
             cardBody = document.createElement('div')
             cardBody.className = 'card-body'
             cardBody.appendChild(singleDieHTML(die))
             card.appendChild(cardBody)
+
+            deleteButton = document.createElement('button')
+            deleteButton.className = 'btn btn-danger delete-die'
+            deleteButton.id = `${die}Delete`
+            deleteButton.innerText = 'X'
+            card.appendChild(deleteButton)
+
             specialDiceDiv.appendChild(card)
         }
     })
-    const specialButtons = document.querySelectorAll('.special-die')
+    const deleteButtons = document.querySelectorAll('.delete-die')
+    deleteButtons.forEach((deleter) => {
+        deleter.addEventListener('click', (e)=>{removeSpecialDice(e)})
+    })
 }
 
 render()
