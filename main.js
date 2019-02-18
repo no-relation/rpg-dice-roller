@@ -1,5 +1,6 @@
 const DICE = ['004','006','008','010','012','020','100']
-let specialDice = ['000']
+let specialDiceArray = ['000']
+let specialDiceDiv = document.createElement('div')
 
 const randomNumbers = (lowestNum, highestNum) => {
     return (Math.floor(Math.random() * highestNum) + lowestNum)
@@ -37,11 +38,11 @@ function addSpecialDice(e) {
     e.preventDefault()
     const specialForm = e.target
     const sides = specialForm.querySelector('#die-num-sides')
-    if (!specialDice.includes(sides.value.padStart(3, '0'))) {
-        specialDice.push(sides.value.padStart(3,'0'))
+    if (!specialDiceArray.includes(sides.value.padStart(3, '0'))) {
+        specialDiceArray.push(sides.value.padStart(3,'0'))
     }
-    console.log(sides, specialDice)
     sides.value = null
+    renderSpecialDice()
 }
 
 const singleDieHTML = (sides) => {
@@ -52,7 +53,7 @@ const singleDieHTML = (sides) => {
 
     const buttonGroup = document.createElement('div')
     buttonGroup.className = 'btn-group btn-group-sm'
-    submitButton = document.createElement('button')
+    const submitButton = document.createElement('button')
     submitButton.type = 'submit'
     submitButton.className = 'btn btn-primary'
     submitButton.innerText = 'ROLL'
@@ -79,7 +80,7 @@ const singleDieHTML = (sides) => {
             <span class="input-group-text">d${parseInt(sides)} </span>
         </div>
     `
-    secondLine = document.createElement('div')
+    const secondLine = document.createElement('div')
     const total = document.createElement('h3')
     total.id = `${sides}SideTotal`
     total.innerText = 'Total: '
@@ -95,37 +96,38 @@ const render = () => {
     console.log('rendered')
     
     DICE.forEach((die)=> {
-        card = document.createElement('div')
+        const card = document.createElement('div')
         card.className = 'card'
         card.style = 'width: 18rem'
-        cardBody = document.createElement('div')
+        const cardBody = document.createElement('div')
         cardBody.className = 'card-body'
         cardBody.appendChild(singleDieHTML(die))
         card.appendChild(cardBody)
         document.body.appendChild(card)
     })
 
-    renderSpecialDice()
+    document.body.appendChild(specialDiceDiv)
 
-    specialCard = document.createElement('div')
-    specialCard.className = 'card'
-    specialCard.style = 'width: 18rem'
+    const specialCardForm = document.createElement('div')
+    specialCardForm.id = 'special-card-form'
+    specialCardForm.className = 'card'
+    specialCardForm.style = 'width: 18rem'
     
-    specialTitle = document.createElement('h5')
+    const specialTitle = document.createElement('h5')
     specialTitle.className = 'card-title'
     specialTitle.innerText = "Create new die with how many sides?"
-    specialCard.appendChild(specialTitle)
+    specialCardForm.appendChild(specialTitle)
 
-    dieForm = document.createElement('form')
+    const dieForm = document.createElement('form')
     dieForm.className = 'input-group'
 
-    dieInput = document.createElement('input')
+    const dieInput = document.createElement('input')
     dieInput.className = 'form-control'
     dieInput.type = 'number'
     dieInput.id = 'die-num-sides'
     dieForm.appendChild(dieInput)
     
-    spButtonGroup = document.createElement('div')
+    const spButtonGroup = document.createElement('div')
     spButtonGroup.className = 'input-group-append'
     specialDieButton = document.createElement('button')
     specialDieButton.type = 'submit'
@@ -135,11 +137,11 @@ const render = () => {
     spButtonGroup.appendChild(specialDieButton)
     dieForm.appendChild(spButtonGroup)
 
-    specialCard.appendChild(dieForm)
+    specialCardForm.appendChild(dieForm)
 
-    document.body.appendChild(specialCard)
+    document.body.appendChild(specialCardForm)
 
-    buttons = document.querySelectorAll('.btn-outline-secondary')
+    const buttons = document.querySelectorAll('.btn-outline-secondary')
     buttons.forEach((button)=>{
         button.addEventListener("click", (e)=>{handleBtnQuantClick(e)})
     }) 
@@ -151,21 +153,21 @@ const render = () => {
 }
 
 const renderSpecialDice = () => {
-    console.log('rendering special dice')
-    specialDice.forEach((die) => {
+    specialDiceDiv.innerHTML = ''
+    specialDiceArray.forEach((die) => {
         if (die !== '000') {
             card = document.createElement('div')
-            card.className = 'card'
+            card.className = 'card special-die'
             card.style = 'width: 18rem'
-            card.type = 'special-die'
             card.id = `${die}SiderCard`
             cardBody = document.createElement('div')
             cardBody.className = 'card-body'
             cardBody.appendChild(singleDieHTML(die))
             card.appendChild(cardBody)
-            specialCard.before(card)
+            specialDiceDiv.appendChild(card)
         }
     })
+    const specialButtons = document.querySelectorAll('.special-die')
 }
 
 render()
