@@ -7,9 +7,12 @@ const randomNumbers = (lowestNum, highestNum) => {
 }
 
 function handleBtnQuantClick(e) {
-    totalHTML = document.getElementById(e.target.id.slice(0, 3) + 'SideTotal')
+    const sides = e.target.id.slice(0, 3)
+    totalHTML = document.getElementById(sides + 'SideTotal')
     totalHTML.innerText = 'Total: '
-    field = document.getElementById(e.target.id.slice(0,3) + 'SideDieQuantity')
+    document.getElementById(sides + "-roll-list") && document.getElementById(sides + "-roll-list").remove()
+
+    field = document.getElementById(sides + 'SideDieQuantity')
     direction = e.target.id.slice(3,4)
     if (parseInt(field.value) > 0 && direction == 'm') {
         field.value = parseInt(field.value) - 1
@@ -20,18 +23,29 @@ function handleBtnQuantClick(e) {
 
 function handleRollSubmit(e) {
     e.preventDefault()
-    totalHTML = document.getElementById(e.target.id.slice(0, 3) + 'SideTotal')
+    const sides = e.target.id.slice(0,3)
+    const totalHTML = document.getElementById(sides + 'SideTotal')
     totalHTML.innerText = 'Total: '
+    document.getElementById(sides + "-roll-list") && document.getElementById(sides + "-roll-list").remove()
 
-    form = e.target
-    dieType = parseInt(form.id)
-    field = document.getElementById(e.target.id.slice(0, 3) + 'SideDieQuantity')
+    const form = e.target
+    const dieType = parseInt(form.id)
+    field = document.getElementById(sides + 'SideDieQuantity')
     dieNumber = parseInt(field.value)
-    total = 0
+    let rollArray = []
     for(let i=0; i<dieNumber; i++) {
-        total += randomNumbers(1,dieType)
+        rollArray.push(randomNumbers(1,dieType))
     }
-    totalHTML.innerText += total
+    totalHTML.innerText += rollArray.reduce((a,b)=>a+b)
+    if (rollArray.length > 1) {
+        const rollArrayHTML = document.createElement('p')
+        rollArrayHTML.id = `${sides}-roll-list`
+        rollArrayHTML.innerText += rollArray[0]
+        rollArray.slice(1).forEach((roll)=>{
+            rollArrayHTML.innerText += ` + ${roll}`
+        })
+        totalHTML.after(rollArrayHTML)
+    }
 }
 
 function addSpecialDice(e) {
@@ -167,7 +181,6 @@ const addAllListeners = () => {
     })
     const forms = document.querySelectorAll('.die-form')
     forms.forEach((form) => {
-        console.log(form.className)
         if (!form.className.includes('listened')) {
             form.className += ' listened'
             form.addEventListener("submit", (e) => { handleRollSubmit(e) })
