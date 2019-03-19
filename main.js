@@ -52,7 +52,7 @@ function addSpecialDice(e) {
     e.preventDefault()
     const specialForm = e.target
     const sides = specialForm.querySelector('#die-num-sides')
-    if (!specialDiceArray.includes(sides.value.padStart(3, '0'))) {
+    if (sides.value > 1 && !specialDiceArray.includes(sides.value.padStart(3, '0'))) {
         specialDiceArray.push(sides.value.padStart(3,'0'))
     }
     sides.value = null

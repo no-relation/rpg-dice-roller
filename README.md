@@ -6,4 +6,4 @@ Future Feature list:
 - counter for number of rolls
 - animations
 - something big happening when you hit a natural 20 or 100
-- custom number of sided dice
+- ~~custom number of sided dice~~
